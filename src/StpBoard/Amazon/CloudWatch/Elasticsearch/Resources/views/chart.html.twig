@@ -24,7 +24,8 @@
                 tickPixelInterval: 150
             },
             yAxis: {
-                title: ''
+                title: '',
+                max:{% if metrics.unit == 'Percent' %}100 {% else %} null {% endif %}
             },
             plotOptions: {
                 area: {

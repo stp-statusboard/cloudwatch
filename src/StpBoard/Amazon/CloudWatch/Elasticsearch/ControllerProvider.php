@@ -48,11 +48,13 @@ class ControllerProvider implements BoardProviderInterface, ControllerProviderIn
                     $request = $application['request'];
 
                     $statistics = Statistics::fromApplication($application);
+                    $metrics = Metrics::fromApplication($application);
 
                     return $this->twig->render(
                         self::CHART_VIEW_TEMPLATE_NAME,
                         [
-                            'statistics' => $statistics->get(Metrics::fromApplication($application)),
+                            'metrics' => $metrics,
+                            'statistics' => $statistics->get($metrics),
                             'name' => $request->get('name'),
                         ]
                     );

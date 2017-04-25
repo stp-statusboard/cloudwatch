@@ -109,4 +109,9 @@ final class Metrics
             ],
         ];
     }
+
+    public function getUnit(): string
+    {
+        return $this->unit;
+    }
 }
