@@ -21,6 +21,7 @@
 Available `ACTION`:
 
 * count - document count from last month
+* free_storage - fre storage from last month
 
 Parameter `NAME` - name which will be displayed on chart
 

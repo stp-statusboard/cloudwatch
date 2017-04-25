@@ -61,7 +61,7 @@ final class Metrics
         $request = $application['request'];
 
         return new self(
-            self::METRIC_ACTION_MAPPER[$request->get('action', self::ACTION_SEARCHABLE_DOCUMENTS_NAME)],
+            self::METRIC_ACTION_MAPPER[$request->get('action')] ?? self::METRIC_SEARCHABLE_DOCUMENTS,
             $request->get('domain_name'),
             $request->get('client_id'),
             new DateTime(self::ONE_MONTH_AGO_MIDNIGHT),
