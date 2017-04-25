@@ -20,7 +20,7 @@
 
 Available `ACTION`:
 
-* count - document count from last month
+* count - document count from last month (which is used by default)
 * free_storage - fre storage from last month
 * cpu - cpu utilization from last month
 
