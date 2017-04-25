@@ -6,10 +6,10 @@ use Silex\Application;
 use Silex\ControllerCollection;
 use Silex\ControllerProviderInterface;
 use StpBoard\Amazon\CloudWatch\Elasticsearch\Exception\StatisticsException;
+use StpBoard\Amazon\CloudWatch\Elasticsearch\Parameter\Metric;
 use StpBoard\Base\BoardProviderInterface;
 use StpBoard\Base\TwigTrait;
 use Symfony\Component\HttpFoundation\Request;
-
 
 class ControllerProvider implements BoardProviderInterface, ControllerProviderInterface
 {
@@ -47,12 +47,12 @@ class ControllerProvider implements BoardProviderInterface, ControllerProviderIn
                     /** @var Request $request */
                     $request = $application['request'];
 
-                    $dynamicStatistics = DynamicStatistics::fromApplication($application);
+                    $statistics = Statistics::fromApplication($application);
 
                     return $this->twig->render(
                         self::CHART_VIEW_TEMPLATE_NAME,
                         [
-                            'statistics' => $dynamicStatistics->get(),
+                            'statistics' => $statistics->get(Metric::fromApplication($application)),
                             'name' => $request->get('name'),
                         ]
                     );

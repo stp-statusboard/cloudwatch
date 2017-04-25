@@ -6,7 +6,7 @@ use Aws\CloudWatch\CloudWatchClient;
 use Exception;
 use Silex\Application;
 use StpBoard\Amazon\CloudWatch\Elasticsearch\Exception\StatisticsException;
-use StpBoard\Amazon\CloudWatch\Elasticsearch\Parameter\DocumentCount;
+use StpBoard\Amazon\CloudWatch\Elasticsearch\Parameter\Metric;
 use StpBoard\Amazon\CloudWatch\Elasticsearch\Result\StatisticsCollection;
 
 class Statistics
@@ -28,11 +28,11 @@ class Statistics
     /**
      * @throws StatisticsException
      */
-    public function getDocumentCount(DocumentCount $documentCount): StatisticsCollection
+    public function get(Metric $metric): StatisticsCollection
     {
         try {
             return StatisticsCollection::fromAwsResult(
-                $this->cloudWatchClient->getMetricStatistics($documentCount->get())
+                $this->cloudWatchClient->getMetricStatistics($metric->toArray())
             );
         } catch (Exception $exception) {
             throw StatisticsException::fromPrevious($exception);

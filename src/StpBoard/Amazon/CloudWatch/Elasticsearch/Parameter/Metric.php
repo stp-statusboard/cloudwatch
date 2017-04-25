@@ -6,21 +6,32 @@ use DateTime;
 use Silex\Application;
 use Symfony\Component\HttpFoundation\Request;
 
-final class DocumentCount
+final class Metric
 {
-    const METRIC_NAME = 'SearchableDocuments';
+    const METRIC_SEARCHABLE_DOCUMENTS = 'SearchableDocuments';
+    const ACTION_SEARCHABLE_DOCUMENTS_NAME = 'count';
+
+    const METRIC_FREE_STORAGE_SPACE = 'FreeStorageSpace';
+    const ACTION_FREE_STORAGE_SPACE_NAME = 'free_space';
+
+    const METRIC_ACTION_MAPPER = [
+        self::ACTION_SEARCHABLE_DOCUMENTS_NAME => self::ACTION_SEARCHABLE_DOCUMENTS_NAME,
+        self::ACTION_FREE_STORAGE_SPACE_NAME => self::METRIC_FREE_STORAGE_SPACE,
+    ];
 
     const NAMESPACE = 'AWS/ES';
 
-    const PERIOD = 86400;
-
     const UNIT = 'Count';
+
+    const PERIOD = 86400;
 
     const STATISTICS = ['Average'];
 
     const ONE_MONTH_AGO_MIDNIGHT = '-1 month midnight';
 
     const TODAY_MIDNIGHT = 'today midnight';
+
+    private $metricName;
 
     private $domainName;
 
@@ -30,8 +41,14 @@ final class DocumentCount
 
     private $endDate;
 
-    private function __construct(string $domainName, string $clientId, DateTime $startDate, DateTime $endDate)
-    {
+    private function __construct(
+        string $metricName,
+        string $domainName,
+        string $clientId,
+        DateTime $startDate,
+        DateTime $endDate
+    ) {
+        $this->metricName = $metricName;
         $this->domainName = $domainName;
         $this->clientId = $clientId;
         $this->startDate = $startDate;
@@ -45,6 +62,7 @@ final class DocumentCount
         $request = $application['request'];
 
         return new self(
+            self::METRIC_ACTION_MAPPER[$request->get('action', self::METRIC_SEARCHABLE_DOCUMENTS)],
             $request->get('domain_name'),
             $request->get('client_id'),
             new DateTime(self::ONE_MONTH_AGO_MIDNIGHT),
@@ -52,10 +70,10 @@ final class DocumentCount
         );
     }
 
-    public function get(): array
+    public function toArray(): array
     {
         return [
-            'MetricName' => self::METRIC_NAME,
+            'MetricName' => $this->metricName,
             'Namespace' => self::NAMESPACE,
             'StartTime' => $this->startDate,
             'EndTime' => $this->endDate,
