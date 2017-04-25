@@ -31,17 +31,11 @@ final class Metrics
 
     const UNIT_COUNT = 'Count';
     const UNIT_MEGABYTES = 'Megabytes';
-    const UNIT_PERCENT = 'Percents';
+    const UNIT_PERCENT = 'Percent';
 
     const NAMESPACE = 'AWS/ES';
 
-    const PERIOD = 86400;
-
     const STATISTICS = ['Average'];
-
-    const ONE_MONTH_AGO_MIDNIGHT = '-1 month midnight';
-
-    const TODAY_MIDNIGHT = 'today midnight';
 
     private $metricsName;
 
@@ -50,6 +44,8 @@ final class Metrics
     private $clientId;
 
     private $unit;
+
+    private $period;
 
     private $startDate;
 
@@ -60,6 +56,7 @@ final class Metrics
         string $domainName,
         string $clientId,
         string $unit,
+        int $period,
         DateTime $startDate,
         DateTime $endDate
     ) {
@@ -67,6 +64,7 @@ final class Metrics
         $this->domainName = $domainName;
         $this->clientId = $clientId;
         $this->unit = $unit;
+        $this->period = $period;
         $this->startDate = $startDate;
         $this->endDate = $endDate;
     }
@@ -83,8 +81,9 @@ final class Metrics
             $request->get('domain_name'),
             $request->get('client_id'),
             $metricsUnit,
-            new DateTime(self::ONE_MONTH_AGO_MIDNIGHT),
-            new DateTime(self::TODAY_MIDNIGHT)
+            $request->get('period'),
+            new DateTime($request->get('start_date')),
+            new DateTime($request->get('end_date'))
         );
     }
 
@@ -95,7 +94,7 @@ final class Metrics
             'Namespace' => self::NAMESPACE,
             'StartTime' => $this->startDate,
             'EndTime' => $this->endDate,
-            'Period' => self::PERIOD,
+            'Period' => $this->period,
             'Unit' => $this->unit,
             'Statistics' => self::STATISTICS,
             'Dimensions' => [

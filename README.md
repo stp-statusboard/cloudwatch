@@ -11,6 +11,9 @@
     params:
         name: NAME
         action: ACTION
+        start_date: START_DATE
+        end_date: END_DATE
+        period: PERIOD
         region: REGION
         aws_key: AWS_KEY
         aws_secret: AWS_SECRET
@@ -25,6 +28,12 @@ Available `ACTION`:
 * cpu - cpu utilization from last month
 
 Parameter `NAME` - name which will be displayed on chart
+
+Parameter `START_DATE` - show starting from this date. Format which is accepted by `DateTime`
+
+Parameter `END_DATE` - show till this date. Format which is accepted by `DateTime`
+
+Parameter `PERIOD` - time interval in seconds  
 
 Parameter `REGION` - like 'eu-west-1` etc.
 
