@@ -8,20 +8,32 @@ use Symfony\Component\HttpFoundation\Request;
 
 final class Metrics
 {
-    const METRIC_SEARCHABLE_DOCUMENTS = 'SearchableDocuments';
+    const METRICS_SEARCHABLE_DOCUMENTS = 'SearchableDocuments';
     const ACTION_SEARCHABLE_DOCUMENTS_NAME = 'count';
 
-    const METRIC_FREE_STORAGE_SPACE = 'FreeStorageSpace';
-    const ACTION_FREE_STORAGE_SPACE_NAME = 'free_space';
+    const METRICS_FREE_STORAGE_SPACE = 'FreeStorageSpace';
+    const ACTION_FREE_STORAGE_SPACE_NAME = 'free_storage';
 
-    const METRIC_ACTION_MAPPER = [
-        self::ACTION_SEARCHABLE_DOCUMENTS_NAME => self::METRIC_SEARCHABLE_DOCUMENTS,
-        self::ACTION_FREE_STORAGE_SPACE_NAME => self::METRIC_FREE_STORAGE_SPACE,
+    const METRICS_CPU_UTILIZATION = 'CPUUtilization';
+    const ACTION_CPU_UTILIZATION_NAME = 'cpu';
+
+    const ACTION_METRICS_MAPPER = [
+        self::ACTION_SEARCHABLE_DOCUMENTS_NAME => self::METRICS_SEARCHABLE_DOCUMENTS,
+        self::ACTION_FREE_STORAGE_SPACE_NAME => self::METRICS_FREE_STORAGE_SPACE,
+        self::ACTION_CPU_UTILIZATION_NAME => self::METRICS_CPU_UTILIZATION,
     ];
 
-    const NAMESPACE = 'AWS/ES';
+    const METRICS_UNIT_MAPPER = [
+        self::METRICS_SEARCHABLE_DOCUMENTS => self::UNIT_COUNT,
+        self::METRICS_FREE_STORAGE_SPACE => self::UNIT_MEGABYTES,
+        self::METRICS_CPU_UTILIZATION => self::UNIT_PERCENT,
+    ];
 
-    const UNIT = 'Count';
+    const UNIT_COUNT = 'Count';
+    const UNIT_MEGABYTES = 'Megabytes';
+    const UNIT_PERCENT = 'Percents';
+
+    const NAMESPACE = 'AWS/ES';
 
     const PERIOD = 86400;
 
@@ -31,26 +43,30 @@ final class Metrics
 
     const TODAY_MIDNIGHT = 'today midnight';
 
-    private $metricName;
+    private $metricsName;
 
     private $domainName;
 
     private $clientId;
+
+    private $unit;
 
     private $startDate;
 
     private $endDate;
 
     private function __construct(
-        string $metricName,
+        string $metricsName,
         string $domainName,
         string $clientId,
+        string $unit,
         DateTime $startDate,
         DateTime $endDate
     ) {
-        $this->metricName = $metricName;
+        $this->metricsName = $metricsName;
         $this->domainName = $domainName;
         $this->clientId = $clientId;
+        $this->unit = $unit;
         $this->startDate = $startDate;
         $this->endDate = $endDate;
     }
@@ -59,11 +75,14 @@ final class Metrics
     {
         /** @var Request $request */
         $request = $application['request'];
+        $metricsName = self::ACTION_METRICS_MAPPER[$request->get('action')] ?? self::METRICS_SEARCHABLE_DOCUMENTS;
+        $metricsUnit = self::METRICS_UNIT_MAPPER[$metricsName];
 
         return new self(
-            self::METRIC_ACTION_MAPPER[$request->get('action')] ?? self::METRIC_SEARCHABLE_DOCUMENTS,
+            $metricsName,
             $request->get('domain_name'),
             $request->get('client_id'),
+            $metricsUnit,
             new DateTime(self::ONE_MONTH_AGO_MIDNIGHT),
             new DateTime(self::TODAY_MIDNIGHT)
         );
@@ -72,12 +91,12 @@ final class Metrics
     public function toArray(): array
     {
         return [
-            'MetricName' => $this->metricName,
+            'MetricName' => $this->metricsName,
             'Namespace' => self::NAMESPACE,
             'StartTime' => $this->startDate,
             'EndTime' => $this->endDate,
             'Period' => self::PERIOD,
-            'Unit' => self::UNIT,
+            'Unit' => $this->unit,
             'Statistics' => self::STATISTICS,
             'Dimensions' => [
                 [
