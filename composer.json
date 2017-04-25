@@ -1,0 +1,20 @@
+{
+    "name": "stp-statusboard/stp-statusboard-cloudwatch",
+    "authors": [
+        {
+            "name": "Rafał Kański",
+            "email": "rafal.kanski@schibsted.pl"
+        }
+    ],
+    "license": "MIT",
+    "require": {
+        "silex/silex": "1.2.*",
+        "stp-statusboard/stp-statusboard-base": "0.1.*",
+        "aws/aws-sdk-php": "^3.26"
+    },
+    "autoload": {
+        "psr-0": {
+            "StpBoard\\Amazon\\CloudWatch\\": "src"
+        }
+    }
+}
