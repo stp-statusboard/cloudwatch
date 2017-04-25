@@ -6,7 +6,7 @@ use DateTime;
 use Silex\Application;
 use Symfony\Component\HttpFoundation\Request;
 
-final class Metric
+final class Metrics
 {
     const METRIC_SEARCHABLE_DOCUMENTS = 'SearchableDocuments';
     const ACTION_SEARCHABLE_DOCUMENTS_NAME = 'count';
@@ -15,7 +15,7 @@ final class Metric
     const ACTION_FREE_STORAGE_SPACE_NAME = 'free_space';
 
     const METRIC_ACTION_MAPPER = [
-        self::ACTION_SEARCHABLE_DOCUMENTS_NAME => self::ACTION_SEARCHABLE_DOCUMENTS_NAME,
+        self::ACTION_SEARCHABLE_DOCUMENTS_NAME => self::METRIC_SEARCHABLE_DOCUMENTS,
         self::ACTION_FREE_STORAGE_SPACE_NAME => self::METRIC_FREE_STORAGE_SPACE,
     ];
 
@@ -55,14 +55,13 @@ final class Metric
         $this->endDate = $endDate;
     }
 
-
     public static function fromApplication(Application $application): self
     {
         /** @var Request $request */
         $request = $application['request'];
 
         return new self(
-            self::METRIC_ACTION_MAPPER[$request->get('action', self::METRIC_SEARCHABLE_DOCUMENTS)],
+            self::METRIC_ACTION_MAPPER[$request->get('action', self::ACTION_SEARCHABLE_DOCUMENTS_NAME)],
             $request->get('domain_name'),
             $request->get('client_id'),
             new DateTime(self::ONE_MONTH_AGO_MIDNIGHT),

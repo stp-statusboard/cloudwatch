@@ -6,7 +6,7 @@ use Aws\CloudWatch\CloudWatchClient;
 use Exception;
 use Silex\Application;
 use StpBoard\Amazon\CloudWatch\Elasticsearch\Exception\StatisticsException;
-use StpBoard\Amazon\CloudWatch\Elasticsearch\Parameter\Metric;
+use StpBoard\Amazon\CloudWatch\Elasticsearch\Parameter\Metrics;
 use StpBoard\Amazon\CloudWatch\Elasticsearch\Result\StatisticsCollection;
 
 class Statistics
@@ -28,11 +28,11 @@ class Statistics
     /**
      * @throws StatisticsException
      */
-    public function get(Metric $metric): StatisticsCollection
+    public function get(Metrics $metrics): StatisticsCollection
     {
         try {
             return StatisticsCollection::fromAwsResult(
-                $this->cloudWatchClient->getMetricStatistics($metric->toArray())
+                $this->cloudWatchClient->getMetricStatistics($metrics->toArray())
             );
         } catch (Exception $exception) {
             throw StatisticsException::fromPrevious($exception);
