@@ -57,7 +57,7 @@ class StatisticsCollection
 
                     return [
                         'x' => $dataPointData->format('U') * 1000,
-                        'y' => (int) $dataPoint['Average']
+                        'y' => $dataPoint['Average']
                     ];
                 },
                 $sortedData
