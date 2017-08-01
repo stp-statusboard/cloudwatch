@@ -68,6 +68,7 @@ final class Metrics
         $this->clientId = $clientId;
         $this->unit = $unit;
         $this->period = $period;
+        $this->statistics = $statistics;
         $this->startDate = $startDate;
         $this->endDate = $endDate;
     }
