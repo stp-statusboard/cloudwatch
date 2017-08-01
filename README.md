@@ -14,6 +14,7 @@
         start_date: START_DATE
         end_date: END_DATE
         period: PERIOD
+        statistics: STATISTICS
         region: REGION
         aws_key: AWS_KEY
         aws_secret: AWS_SECRET
@@ -34,6 +35,8 @@ Parameter `START_DATE` - show starting from this date. Format which is accepted 
 Parameter `END_DATE` - show till this date. Format which is accepted by `DateTime`
 
 Parameter `PERIOD` - time interval in seconds  
+
+Parameter `STATISTICS` - statistics to be shown on chart: one of http://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/cloudwatch_concepts.html#Statistic, deafult 'Average'
 
 Parameter `REGION` - like 'eu-west-1` etc.
 

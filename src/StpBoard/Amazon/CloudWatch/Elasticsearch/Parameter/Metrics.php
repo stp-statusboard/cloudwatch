@@ -35,7 +35,7 @@ final class Metrics
 
     const NAMESPACE = 'AWS/ES';
 
-    const STATISTICS = ['Average'];
+    const STATISTICS_AVERAGE = 'Average';
 
     private $metricsName;
 
@@ -47,6 +47,8 @@ final class Metrics
 
     private $period;
 
+    private $statistics;
+
     private $startDate;
 
     private $endDate;
@@ -57,6 +59,7 @@ final class Metrics
         string $clientId,
         string $unit,
         int $period,
+        string $statistics,
         DateTime $startDate,
         DateTime $endDate
     ) {
@@ -82,6 +85,7 @@ final class Metrics
             $request->get('client_id'),
             $metricsUnit,
             $request->get('period'),
+            $request->get('statistics', static::STATISTICS_AVERAGE),
             new DateTime($request->get('start_date')),
             new DateTime($request->get('end_date'))
         );
@@ -96,7 +100,7 @@ final class Metrics
             'EndTime' => $this->endDate,
             'Period' => $this->period,
             'Unit' => $this->unit,
-            'Statistics' => self::STATISTICS,
+            'Statistics' => [$this->statistics],
             'Dimensions' => [
                 [
                     'Name' => 'DomainName',
