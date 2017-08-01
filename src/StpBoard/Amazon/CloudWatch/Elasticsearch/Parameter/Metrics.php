@@ -119,4 +119,9 @@ final class Metrics
     {
         return $this->unit;
     }
+
+    public function getStatistics(): string
+    {
+        return $this->statistics;
+    }
 }

@@ -32,7 +32,8 @@ class Statistics
     {
         try {
             return StatisticsCollection::fromAwsResult(
-                $this->cloudWatchClient->getMetricStatistics($metrics->toArray())
+                $this->cloudWatchClient->getMetricStatistics($metrics->toArray()),
+                $metrics->getStatistics()
             );
         } catch (Exception $exception) {
             throw StatisticsException::fromPrevious($exception);

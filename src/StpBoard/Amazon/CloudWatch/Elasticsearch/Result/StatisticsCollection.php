@@ -14,11 +14,12 @@ class StatisticsCollection
         $this->data = $data;
     }
 
-    public static function fromAwsResult(Result $result): self
+    public static function fromAwsResult(Result $result, string $statistics): self
     {
         return new self(
             self::extractPointsFromSortedData(
-                self::getDataSortedByDateAsc($result)
+                self::getDataSortedByDateAsc($result),
+                $statistics
             )
         );
     }
@@ -47,17 +48,17 @@ class StatisticsCollection
         return $dataPoints;
     }
 
-    private static function extractPointsFromSortedData(array $sortedData): array
+    private static function extractPointsFromSortedData(array $sortedData, string $statistics): array
     {
         return array_values(
             array_map(
-                function (array $dataPoint) {
+                function (array $dataPoint) use ($statistics) {
                     /** @var DateTime $dataPointData */
                     $dataPointData = $dataPoint['Timestamp'];
 
                     return [
                         'x' => $dataPointData->format('U') * 1000,
-                        'y' => $dataPoint['Average']
+                        'y' => $dataPoint[$statistics]
                     ];
                 },
                 $sortedData
